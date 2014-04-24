@@ -27,7 +27,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-//TODO: Checar por qué al seleccionar la hora la sigue poniendo en formato 12 horas
 ; (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD is used - Register as an anonymous module.
