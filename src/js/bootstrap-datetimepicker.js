@@ -26,6 +26,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
+//TODO: Checar por qué al seleccionar la hora la sigue poniendo en formato 12 horas
 ; (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD is used - Register as an anonymous module.
@@ -114,9 +116,11 @@ THE SOFTWARE.
                 }
             }
             picker.format = picker.options.format;
+            //HAXDAI:Set default value of picker.use24hours. This has higher priority over finding A in format
+            picker.use24hours = picker.options.use24hours || false;
 
             longDateFormat = pMoment()._lang._longDateFormat;
-
+            
             if (!picker.format) {
                 picker.format = (picker.options.pickDate ? longDateFormat.L : '');
                 if (picker.options.pickDate && picker.options.pickTime) picker.format += ' ';
@@ -130,8 +134,12 @@ THE SOFTWARE.
                     }
                 }
             }
-            picker.use24hours = picker.format.toLowerCase().indexOf("a") < 1;
-
+            
+            if (picker.use24hours && picker.format.indexOf(' A')) {
+                picker.format = picker.format.split(" A")[0];
+            }
+            //picker.use24hours = picker.format.toLowerCase().indexOf("a") < 1;
+            
             if (picker.component) icon = picker.component.find('span');
 
             if (picker.options.pickTime) {
@@ -216,6 +224,7 @@ THE SOFTWARE.
             else {
                 eData = picker.element.data();
             }
+            
             if (eData.dateFormat !== undefined) picker.options.format = eData.dateFormat;
             if (eData.datePickdate !== undefined) picker.options.pickDate = eData.datePickdate;
             if (eData.datePicktime !== undefined) picker.options.pickTime = eData.datePicktime;
@@ -235,6 +244,8 @@ THE SOFTWARE.
             if (eData.dateUsestrict !== undefined) picker.options.useStrict = eData.dateUsestrict;
             if (eData.dateDirection !== undefined) picker.options.direction = eData.dateDirection;
             if (eData.dateSidebyside !== undefined) picker.options.sideBySide = eData.dateSidebyside;
+            //HAXDAI:Added processing of use24hours tag in data
+            if (eData.dateUse24hours !== undefined) picker.options.use24hours = eData.dateUse24hours;
         },
 
         place = function () {
@@ -522,6 +533,7 @@ THE SOFTWARE.
             var timeComponents = picker.widget.find('.timepicker span[data-time-component]'),
             hour = picker.date.hours(),
             period = 'AM';
+    
             if (!picker.use24hours) {
                 if (hour >= 12) period = 'PM';
                 if (hour === 0) hour = 12;
